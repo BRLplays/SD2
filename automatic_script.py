@@ -21,7 +21,9 @@ import match_and_log as log
 
 
 # Absolute folder path (Change accordingly)
-folder_path = 'C:/Users/luigi/Desktop/LPR_Pipeline'
+# Luigi's: 'C:/Users/luigi/Desktop/LPR_Pipeline'
+# Aymen's: 'C:/Users/Kaynat/OneDrive/Desktop/LPR_Pipeline'
+folder_path = 'C:/Users/Kaynat/OneDrive/Desktop/LPR_Pipeline'
 
 # Argument Parsing
 n = len(sys.argv)
@@ -101,7 +103,7 @@ for line in lines:
 display_string = first_result + " " + formatted_datetime + "\n"
 print("\n\n\nIdentified License plate: ", display_string)
 
-zone =  4 # DELETE LATER
+zone =  1 # DELETE LATER
 
 if(identified):
     detection_info = {
