@@ -9,8 +9,12 @@ def similar(plate1, plate2):
 
 
 def update_zone_counter(previous_zone, new_zone, capacity_data):
+    # Vehicle enters and immediately exits
+    if(previous_zone == 0 and new_zone == 4):
+        return capacity_data
+
     # Vehicle entering
-    if(previous_zone == 0):
+    elif(previous_zone == 0):
         zone = f"zone{new_zone}_count"
         capacity_data[zone] += 1
         
@@ -99,7 +103,14 @@ def match_and_log(new_detection):
         
         # Similar plate found
         if(plate_similarity > threshold_correlation):
-            update_zone_counter(element["zone"], new_detection["zone"], capacity_data)
+            # Vehicle is reentering
+            if(element["zone"] == 4):
+                update_zone_counter(0, new_detection["zone"], capacity_data)
+            # Vehicle is moving to a different zone 
+            else:
+                update_zone_counter(element["zone"], new_detection["zone"], capacity_data)
+            
+            # Update the log data
             element["zone"] = new_detection["zone"]
             element["lastSeen"] = new_detection["lastSeen"]
             unique_plate = False
@@ -114,5 +125,10 @@ def match_and_log(new_detection):
     sorted_log_data = sorted(log_data, key=lambda x: x["plate"])
 
     # Write modified data back to the JSON files
-    write_json(capacity_file_path, capacity_data)
     write_json(log_file_path, sorted_log_data)
+    write_json(capacity_file_path, capacity_data)
+    
+    # Write extra .txt file for LCD display convenience
+    with open('garage_status.txt', 'w') as file:
+        for key, value in capacity_data.items():
+            file.write(f'{key} {value}\n')

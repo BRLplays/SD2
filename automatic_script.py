@@ -101,7 +101,7 @@ for line in lines:
 display_string = first_result + " " + formatted_datetime + "\n"
 print("\n\n\nIdentified License plate: ", display_string)
 
-zone = 1 # DELETE LATER
+zone =  4 # DELETE LATER
 
 if(identified):
     detection_info = {
@@ -111,9 +111,9 @@ if(identified):
     }   
     log.match_and_log(detection_info)
 else:
-    log_file = open("log.txt", "a")
-    log_file.write(display_string)
-    log_file.close()
+    identification_failure_log = open("IdentificationFailure.txt", "a")
+    identification_failure_log.write(display_string)
+    identification_failure_log.close()
 
 
 # get the end and execution time
