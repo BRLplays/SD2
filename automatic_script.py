@@ -113,7 +113,7 @@ if(identified):
     }   
     log.match_and_log(detection_info)
 else:
-    identification_failure_log = open("IdentificationFailure.txt", "a")
+    identification_failure_log = open("IdentificationFailureLog.txt", "a")
     identification_failure_log.write(display_string)
     identification_failure_log.close()
 
