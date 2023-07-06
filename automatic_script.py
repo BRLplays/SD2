@@ -23,7 +23,7 @@ import match_and_log as log
 # Absolute folder path (Change accordingly)
 # Luigi's: 'C:/Users/luigi/Desktop/LPR_Pipeline'
 # Aymen's: 'C:/Users/Kaynat/OneDrive/Desktop/LPR_Pipeline'
-folder_path = 'C:/Users/Kaynat/OneDrive/Desktop/LPR_Pipeline'
+folder_path = 'C:/Users/luigi/Desktop/LPR_Pipeline'
 
 # Argument Parsing
 n = len(sys.argv)
@@ -39,8 +39,8 @@ if(n > 2):
     sys.exit()
  
 # Arguments passed
-print("\nName of Python script:", sys.argv[0])
-print("\nArguments passed: ", sys.argv[1])
+#print("Name of Python script:", sys.argv[0])
+print("Arguments passed: ", sys.argv[1])
 
 # Automatic Pipeline
 # User selects image from folder
@@ -100,10 +100,10 @@ for line in lines:
         # No camera ID or Zone specification yet
         first_result = "No plate identified (Sensor Triggered)"
 
-display_string = first_result + " " + formatted_datetime + "\n"
-print("\n\n\nIdentified License plate: ", display_string)
+display_string = first_result + " " + formatted_datetime
+print("Identified License plate: ", display_string)
 
-zone =  1 # DELETE LATER
+zone =  4   # DELETE LATER
 
 if(identified):
     detection_info = {
@@ -121,4 +121,4 @@ else:
 # get the end and execution time
 et = time.time()
 elapsed_time = et - st
-print('Execution time:', elapsed_time, 'seconds')
+print('Execution time:', elapsed_time, 'seconds\n')
