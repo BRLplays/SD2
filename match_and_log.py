@@ -128,7 +128,3 @@ def match_and_log(new_detection):
     write_json(log_file_path, sorted_log_data)
     write_json(capacity_file_path, capacity_data)
     
-    # Write extra .txt file for LCD display convenience
-    with open('garage_status.txt', 'w') as file:
-        for key, value in capacity_data.items():
-            file.write(f'{key} {value}\n')
