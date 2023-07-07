@@ -39,6 +39,17 @@ def update_zone_counter(previous_zone, new_zone, capacity_data):
     return capacity_data
 
 
+def check_zone_availability(capacity_data):
+    if(capacity_data['zone1_count'] / capacity_data['zone1_capacity'] < 1):
+        return 1
+    elif(capacity_data['zone2_count'] / capacity_data['zone2_capacity'] < 1):
+        return 2
+    elif(capacity_data['zone3_count'] / capacity_data['zone3_capacity'] < 1):
+        return 3
+    else:
+        return 0
+
+
 def check_files_exist(log_path, cap_path):
     # Check if log file already exists
     file_exists = os.path.isfile(log_path)
@@ -127,4 +138,7 @@ def match_and_log(new_detection):
     # Write modified data back to the JSON files
     write_json(log_file_path, sorted_log_data)
     write_json(capacity_file_path, capacity_data)
+
+    available_zone = check_zone_availability(capacity_data)
+    return available_zone
     

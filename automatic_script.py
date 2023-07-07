@@ -10,24 +10,15 @@ import requests
 from pprint import pprint
 
 
-# ******************************************
-#            Important Notes
-# ******************************************
-# Enter folder's location FIRST
-# Example: cd  C:\Users\luigi\Desktop\LPR_Pipeline
-# Change folder path to the same location
-# Docker Command (in PowerShell): docker run --gpus all --rm -t -p 8080:8080 -v license:/license -e LICENSE_KEY=P4JTAk4w7L -e TOKEN=09c47b071dbfa9c262e86be7f544e540356e371b platerecognizer/alpr-gpu:latest
-#
-# If running for this first time, run the following commands before:
-# 1) pip install -r requirements.txt
-# 2) python setup.py develop --no_cuda_ext
-
+# LPR Function
 def plate_recognizer(path):
     # Make sure Docker image is running in PowerShell
     region = ['us'] # Change to your country
     with open(path, 'rb') as fp:
         response = requests.post(
-            'http://localhost:8080/v1/plate-reader/',
+            # If using Docker: http://localhost:8080/v1/plate-reader/
+            # If internet available: https://api.platerecognizer.com/v1/plate-reader/
+            'https://api.platerecognizer.com/v1/plate-reader/',
             data=dict(regions=region),  # Optional
             files=dict(upload=fp),
             headers={'Authorization': 'Token 09c47b071dbfa9c262e86be7f544e540356e371b'})
@@ -47,41 +38,49 @@ def plate_recognizer(path):
         plate = json_response['results'][0]['plate']
 
         # Print the values
-        print("Processing Time:", processing_time_sec)
-        print("Confidence:", confidence)
-        print("Plate:", plate)
+        # print("Processing Time:", processing_time_sec)
+        # print("Confidence:", confidence)
+        # print("Plate:", plate)
         return (plate, confidence, processing_time_sec)
 
 
+# ******************************************
+#            Important Notes
+# ******************************************
+# Enter folder's location FIRST
+# Example: cd  C:\Users\luigi\Desktop\LPR_Pipeline
+# Change folder path to the same location
+# Docker Command (in PowerShell): docker run --gpus all --rm -t -p 8080:8080 -v license:/license -e LICENSE_KEY=P4JTAk4w7L -e TOKEN=09c47b071dbfa9c262e86be7f544e540356e371b platerecognizer/alpr-gpu:latest
+#
+# If running for this first time, run the following commands before:
+# 1) pip install -r requirements.txt
+# 2) python setup.py develop --no_cuda_ext
 
 # Absolute folder path (Change accordingly)
-# Luigi's: 'C:/Users/luigi/Desktop/LPR_Pipeline'
-# Aymen's: 'C:/Users/Kaynat/OneDrive/Desktop/LPR_Pipeline'
-folder_path = 'C:/Users/Kaynat/OneDrive/Desktop/LPR_Pipeline'
+# folder_path = 'C:/Users/Kaynat/OneDrive/Desktop/LPR_Pipeline' # Aymen
+folder_path = 'C:/Users/luigi/Desktop/LPR_Pipeline' # Luigi
 
 # Argument Parsing
 n = len(sys.argv)
 print("Total arguments passed:", n)
 
 # Argument length checking
-if(n == 1):
-    print("No path (argument) selected. Bye.")
+if(n < 2):
+    print("No path (argument) and/or zone passed. Bye.")
     sys.exit()
 
-if(n > 2):
+if(n > 3):
     print("Too many arguments. Bye.")
     sys.exit()
  
 # Arguments passed
-print("\nName of Python script:", sys.argv[0])
-print("\nArguments passed: ", sys.argv[1])
+zone = sys.argv[1]
+file_path = sys.argv[2]
+print("Name of Python script:", sys.argv[0])
+print("Zone passed: ", sys.argv[1])
+print("Path passed: ", sys.argv[2])
 
 # Automatic Pipeline
-# User selects image from folder
-root = tk.Tk()
-root.withdraw()
-# file_path = filedialog.askopenfilename()
-file_path = sys.argv[1]
 try:
     im = Image.open(file_path)
 except FileNotFoundError:
@@ -122,8 +121,6 @@ plate = lpr_result[0]
 confidence = lpr_result[1]
 processing_time = lpr_result[2]
 
-zone =  1 # DELETE LATER
-
 if(plate == "" or confidence == 0):
     display_string = "No plate identified (Sensor Triggered)" + " " + formatted_datetime
     print(display_string)
@@ -138,10 +135,14 @@ else:
         "zone": zone,
         "lastSeen": formatted_datetime
     }   
-    log.match_and_log(detection_info)
+    available_zone = log.match_and_log(detection_info)
 
 # get the end and execution time
 et = time.time()
 elapsed_time = et - st
 print('Execution time:', elapsed_time, 'seconds\n')
+
+print("Next available zone is: ", available_zone)
+
+
 
