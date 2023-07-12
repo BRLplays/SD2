@@ -99,6 +99,10 @@ def match_and_log(new_detection):
     # Get JSON data from files    
     log_data = read_json(log_file_path)
     capacity_data = read_json(capacity_file_path)
+
+    if(new_detection["plate"] == "no plate"):
+        available_zone = check_zone_availability(capacity_data)
+        return available_zone
         
     # Check if license plate has already been detected
     # Update threshold according to system sensitivity
